@@ -1,0 +1,45 @@
+===============================================================================
+Basic MySQL Queries
+Author: Krishanu Joarder
+===============================================================================
+
+
+
+#1.List the female students who have scored less than 92 in Maths
+USE practice_students_db3;
+SELECT FullName,sex,Mtest
+FROM student 
+WHERE sex = "F" AND mtest < "92"
+
+
+#2.List the students who were born before 01/01/2000
+USE practice_students_db3;
+Alter table student add column NewDOB datetime;
+Update student
+Set NewDOB = Str_to_date(substr(dob,1,10),'%d-%m-%Y');
+
+SELECT fullname, dob 
+FROM student
+WHERE newdob < '2000-01-01'
+
+
+#3.List the students who have not paid their fees
+USE practice_students_db3;
+SELECT FullName, remission
+FROM student
+WHERE remission = 0
+
+
+#4.List the students who come from district YMT
+USE practice_students_db3;
+SELECT FullName, DCode
+FROM student
+WHERE DCode = 'YMT'
+
+#5.Find the age of students 
+USE practice_students_db3;
+SELECT fullname, 
+YEAR(CURDATE()) - YEAR(newdob) AS age 
+FROM student; 
+
+
