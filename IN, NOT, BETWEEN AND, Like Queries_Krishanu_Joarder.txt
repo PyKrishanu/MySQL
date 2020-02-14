@@ -1,0 +1,66 @@
+===============================================================================
+IN, NOT, BETWEEN AND, Like Queries in MySQL
+Author:Krishanu Joarder
+===============================================================================
+
+
+#2.List of the students who are playing a musical instrument 
+
+USE practice_students_db3;
+SELECT FullName,Type
+FROM Student
+JOIN music
+	ON student.ID= music.ID
+
+
+#3. List of students who were born on Wednesday or Saturdays 
+
+USE practice_students_db3;
+SELECT FullName, WeekDay(NEWDOB) AS WeekDay
+FROM Student
+WHERE  WeekDay(NEWDOB) IN (3,6) 
+
+
+
+#4.List of students who were not born in January, March, and June 
+
+USE practice_students_db3;
+Alter table student add column NewDOB datetime;
+Update student
+Set NewDOB = Str_to_date(substr(dob,1,10),'%d-%m-%Y');
+
+SELECT FullName, NEWDOB
+FROM Student
+WHERE month(NewDOB) NOT IN (1,3,6)  
+
+
+#7.List of students who come from Districts ending with T
+
+Use practice_students_db3;
+SELECT FullName, DCode
+From student 
+WHERE DCode LIKE '%T'
+
+
+#8.List of students whose names contain B as the second last letter
+
+Use practice_students_db3;
+SELECT FullName
+From student 
+WHERE FullName LIKE 'B%__'
+
+#10.List of students who don’t contain ‘A’ and ‘R’ in their names
+
+Use practice_students_db3;
+SELECT FullName
+From student 
+WHERE FullName NOT LIKE('%R%') AND FullName NOT LIKE('%A%')
+
+
+#11.List of students whose names contain only these characters - “A” or “B” or “C” or “D”
+
+Use practice_students_db3;
+SELECT FullName
+From student 
+WHERE FullName LIKE '%A%' AND FullName LIKE'%B%' AND FullName LIKE '%C%' AND '%D%'
+
