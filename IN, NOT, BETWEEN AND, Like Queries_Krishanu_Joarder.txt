@@ -62,5 +62,4 @@ WHERE FullName NOT LIKE('%R%') AND FullName NOT LIKE('%A%')
 Use practice_students_db3;
 SELECT FullName
 From student 
-WHERE FullName LIKE '%A%' AND FullName LIKE'%B%' AND FullName LIKE '%C%' AND '%D%'
-
+WHERE FullName not regexp '[E-Z]'
