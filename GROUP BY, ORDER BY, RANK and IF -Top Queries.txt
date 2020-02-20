@@ -1,0 +1,131 @@
+==============================================================================================
+#GROUP BY, ORDER BY, RANK and IF - Top Queries
+#Author: Krishanu Joarder
+==============================================================================================
+
+
+
+# 1. Number of girls of each district
+USE practice_students_db3;
+SELECT DCode, COUNT(DCode) as Cnt
+FROM Student
+WHERE Sex = 'F'
+GROUP BY Dcode
+
+# 2. Max. and min. test score of Class 1 students of each district (Using LIKE)
+USE practice_students_db3;
+SELECT DCode, COUNT(*) as Cnt
+FROM Student
+WHERE Class LIKE '1_'
+GROUP BY Dcode
+
+# 2. Max. and min. test score of Class 1 students of each district (Using Regular Expression)
+USE practice_students_db3;
+SELECT DCode, COUNT(*) as Cnt
+FROM Student
+WHERE Class REGEXP '^1.'
+GROUP BY Dcode
+
+
+#3. Average Math test score of the boys in each class. 
+#The list should not contain class with less than 3 boys.
+USE practice_students_db3;
+SELECT Class, Count(*) AS cnt, AVG(Mtest) AS AvgMtest
+FROM Student
+WHERE SEX = 'M'
+GROUP BY Class
+HAVING Count(*) >=3;
+
+#4.	List of boys of class 1A, sorted by their names
+SELECT Fullname, Class
+FROM Student
+WHERE Class = '1A'
+ORDER BY Fullname ASC
+
+#5.	List of 1B students by their residential district.
+SELECT Fullname, Class, Dcode
+FROM Student
+WHERE Class = '1B'
+ORDER BY DCODE
+
+
+#6.Number of students of each district (in desc. order)
+SELECT Dcode, Count(*) AS Cnt
+FROM Student
+GROUP BY Dcode 
+ORDER BY 2 DESC
+
+#7.Boys of each house sorted by the classes. (2-level ordering)
+SELECT Fullname, HCODE, Class, Sex
+FROM Student
+WHERE Sex = 'M'
+ORDER BY 2,3
+
+
+#8.Top 10% scoring girls students in Maths
+
+
+
+#9. Names of the second highest scorer in Maths Test
+SELECT FullName, Mtest
+FROM (
+SELECT FullName, Mtest, DENSE_RANK () OVER (ORDER BY Mtest DESC) AS NthHighestScorer
+FROM Student) AS TempTable
+WHERE NthHighestScorer = 2;
+
+
+
+#10. List of Students having unique names
+USE practice_students_db3;
+SELECT Fullname, count(*) AS Repetition
+FROM Student
+GROUP BY FullName
+HAVING count(*) = 1;
+
+#List of Students whose names are repeating 
+USE practice_students_db3;
+SELECT Fullname, count(*) AS Repetition
+FROM Student
+GROUP BY FullName
+HAVING count(*) > 1;
+
+#11. Number of dumbs and scholar students are there in the table (Method 1)
+#(Scholar Criteria – Mtest > 95. Everyone else is dumb)
+SELECT IF(Mtest > 95, 'Scholar', 'Dumb') AS Status, Count(*) AS NoOfStuds
+FROM Student
+GROUP BY IF (Mtest > 95, 'Scholar', 'Dumb');
+
+
+
+#11. Number of dumbs and scholar students are there in the table (Method 2)
+#(Scholar Criteria – Mtest > 95. Everyone else is dumb)
+SELECT (SELECT Count(*) FROM Student WHERE Mtest > 95) AS 'Scholar',
+(SELECT Count(*) FROM Student WHERE Mtest <=95) AS 'Dumbs'
+FROM Student
+Limit 1;
+
+
+#13. List the ranks within class 1 (instead of 1A,1B,1C)
+SELECT Fullname, Class, Mtest, RANK() OVER (ORDER BY mtest DESC)
+FROM STUDENT
+WHERE Class LIKE "1_";
+
+
+=============================================================================================================
+DATE QUERIES
+==============================================================================================================
+
+#1. Average age of all boys students
+USE practice_students_db3;
+SELECT AVG (Round(datediff(curdate(), newDOB)/365.25,2)) AS AverageAge
+FROM Student
+WHERE SEX = 'M';
+
+#2. Monthly birthday frequency table (in ascending order)
+USE practice_students_db3;
+SELECT MonthName(NewDOB) AS Mth, Count(*) AS NoOfpeopleborn
+FROM Student
+GROUP BY Month (NewDOB)
+ORDER BY Month(NewDOB) ASC
+
+
