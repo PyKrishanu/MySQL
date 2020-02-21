@@ -1,0 +1,143 @@
+=============================================================================
+Mysql Basic Practice Questions
+=============================================================================
+
+
+#1. a) List all the 2A students
+USE student_database_case1;
+SELECT name, class
+FROM student
+WHERE class = '2A'
+ORDER BY name ASC
+
+#1b) List the names and Math test scores of the 1B boys
+USE student_database_case1;
+SELECT name, mtest, class
+FROM student
+WHERE class = '1B'
+ORDER BY class
+
+#2. a) List the classes, names of students whose names contain the letter "e" as the third letter.
+SELECT class, name
+FROM Student
+WHERE name REGEXP '^..e'
+
+#2b) List the classes, names of students whose names start with "T" and do not contain "y".
+SELECT class, name
+FROM student
+WHERE name REGEXP '^T' AND name NOT REGEXP 'y'
+
+#2c) List the names of 1A students whose Math test score is not 51, 61, 71, 81, or 91.
+SELECT name, class, mtest
+FROM student
+WHERE class = '1A' AND mtest NOT REGEXP '51|61|71|81|91'
+ORDER BY class 
+
+#2d) List the students who were born between 22 March 1986 and 21 April 1986
+
+USE student_database_case1;
+Alter table student add column NewDOB datetime;
+Update student
+Set NewDOB = Str_to_date(substr(dob,1,10),'%d-%m-%Y');
+
+SELECT name, newdob
+FROM student
+WHERE newdob BETWEEN '1986-03-21' AND '1986-04-21'
+
+#3. a) Find the number of girls living in TST.
+USE student_database_case1;
+SELECT dcode, sex, count(*) AS cnt
+FROM student
+WHERE sex = 'F' AND dcode = 'TST'
+GROUP BY dcode
+
+#3b) List the number of pass in the Math test of each class. (passing mark = 50)
+SELECT class, count(*) AS PassedCount
+FROM student
+WHERE mtest >= '50'
+GROUP BY class
+
+#3c) List the number of girls grouped by each class
+SELECT class, count(*) AS NoOfGirls
+FROM Student
+WHERE sex = 'F'
+GROUP BY class
+
+
+# 3d) List the number of girls grouped by the year of birth.
+SELECT sex, YEAR(newdob) AS dob, count(*) AS cnt
+FROM student
+WHERE Sex = 'F'
+GROUP BY YEAR(newdob)
+
+
+# 3e) Find the average age of Form 1 boys (Doubt)
+USE student_database_case1;
+SELECT sex, AVG (datediff(curdate(), newDOB)/365.25) AS AverageAge
+FROM student
+WHERE sex = 'M' AND class REGEXP '^1'
+
+
+#4. a) Find the average mark of mtest for each class.
+USE student_database_case1;
+SELECT class, Round(avg(mtest),2) AS AverageMark
+FROM student
+Group BY Class
+
+
+#4b) Find the maximum mark of mtest for each sex.
+USE student_database_case1;
+SELECT sex, max(mtest) AS MaximumMarks
+FROM student
+Group BY sex
+
+# 4c) Find the average mark of mtest for all students.
+USE student_database_case1;
+SELECT ROUND(AVG(mtest),2) AS AverageMarks
+FROM Student
+
+#5a) List the students who are common members of the Physics Club and the Chemistry Club
+USE student_database_case1;
+SELECT phy.Fullname
+FROM phy, chem
+WHERE phy.Fullname=chem.Fullname
+
+
+#6a) Produce a list of parts in ascending order of quantity
+USE student_database_case1;
+SELECT part_no,descript, qty
+FROM client
+ORDER BY Qty ASC
+
+
+#6b) Produce a list of parts that consist of the keyword ‘Shaft’ in the description.
+USE student_database_case1;
+SELECT part_no,descript
+FROM client
+WHERE descript LIKE '%shaft%'
+
+#6c) Produce a list of parts that have a quantity more than 20 and are supplied by ‘China Metals Co.’
+USE student_database_case1;
+SELECT part_no,descript, qty, supplier
+FROM client
+WHERE supplier LIKE '%China Metals Co.%' AND qty > 20
+
+
+# 6d) List all the suppliers without duplication.
+USE student_database_case1;
+SELECT DISTINCT Supplier
+FROM client
+
+# 6e) Increase the quantity by 10 for those parts with quantity less than 10.
+UPDATE client SET qty = qty + 10
+WHERE qty < 10
+
+
+#6f) Delete records with part_no equal to 879, 654, 231 and 234
+DELETE FROM client 
+WHERE part_no REGEXP '879|654|231|234'
+
+
+#6g) Add a field “Date_purchase” to record the date of purchase.
+USE student_database_case1;
+ALTER TABLE client ADD COLUMN Date_Purchase DATE;
