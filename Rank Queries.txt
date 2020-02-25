@@ -1,0 +1,36 @@
+#1. Create a serial number column in the chess table
+USE practice_students_db3;
+Alter TABLE chess ADD COLUMN Serialnumber INT (10)
+
+#2. Show the name of the lowest maths scorer in each class
+USE practice_students_db3;
+Select Fullname, mtest, class
+FROM(
+SELECT Fullname,class,mtest, RANK () OVER (PARTITION BY class ORDER BY Mtest) AS NthHighestScorer
+FROM Student) AS  Temp
+WHERE NthHighestScorer = 1
+ORDER BY Class
+
+#3. Find the third highest scorer in class 1B (Method 1- Preferred)
+
+USE practice_students_db3;
+Select Fullname, mtest, class
+FROM(
+SELECT Fullname,class,mtest, RANK () OVER (PARTITION BY class ORDER BY Mtest DESC) AS NthHighestScorer
+FROM Student) AS  Temp
+WHERE NthHighestScorer = 3 AND  class = '1B'
+
+#3. Find the third highest scorer in class 1B (Method 2)
+
+USE practice_students_db3;
+Select Fullname, mtest, class
+FROM student
+Where class = '1B'
+order by Mtest DESC
+Limit 3
+
+#4. Assign rank to each student in each class based on Maths test score.
+USE practice_students_db3;
+SELECT Fullname,class,mtest, RANK () OVER (PARTITION BY class ORDER BY Mtest DESC) AS ClassRank
+FROM Student
+ORDER BY Class
