@@ -2,10 +2,10 @@
 -------------------------------------------------------------------------------------------------
 -------------------------------------------------------------------------------------------------
 # The music School – Case Study on DDL Statements
-#Creating a database for a medium-sized music school named Cacophoné Studios2 in MYSQL
--------------------------------------------------------------------------------------------------
--------------------------------------------------------------------------------------------------
 
+#A case study on music school named Cacophoné Studios.  Cacophoné Studios runs a medium-sized music school. They have a fixed series of courses in mind, and a roster of teachers that can fill in for most of them. They also have a long list of past and potential customers. Last year, a small catastrophe happened when 273 students were crammed into the same class and no teacher was assigned to teach it. (Next door, a class of 14 had somehow ended up with three instructors.) They're hoping that MySQL can help them avoid the same embarrassment this time around.#
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
 #Creating the Database
 CREATE SCHEMA Cacophoné_Studios2;
 #Creating Table- Instructors
