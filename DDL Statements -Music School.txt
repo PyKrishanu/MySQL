@@ -1,0 +1,91 @@
+
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+# The music School – Case Study on DDL Statements
+#Creating a database for a medium-sized music school named Cacophoné Studios2 in MYSQL
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+
+#Creating the Database
+CREATE SCHEMA Cacophoné_Studios2;
+#Creating Table- Instructors
+USE Cacophoné_Studios2;
+CREATE TABLE Instructors
+(InsID VARCHAR (10),
+InsName CHAR (20) NOT NULL,
+InsAddress VARCHAR (100),
+InsEmail VARCHAR (20),
+InsPhone INT (10),
+CONSTRAINT Ins_pk PRIMARY KEY(InsID)
+);
+
+#Creating Table- Subjects
+CREATE TABLE Subjects
+(SubID VARCHAR (10),
+SubtName CHAR (20) NOT NULL,
+CourseID VARCHAR (20) NOT NULL,
+CONSTRAINT sub_pk PRIMARY KEY(SubID)
+);
+
+#Creating Table- Courses
+CREATE TABLE Courses
+(CourseID VARCHAR (10),
+CourseName CHAR (20) NOT NULL,
+CONSTRAINT course_pk PRIMARY KEY(CourseID)
+);
+
+#Creating Table- Batches
+CREATE TABLE Batches
+(BatchID VARCHAR (10),
+BatchStartDate VARCHAR (10) NOT NULL,
+CourseID VARCHAR (10),
+CONSTRAINT batches_pk PRIMARY KEY(BatchID),
+CONSTRAINT batches_fk FOREIGN KEY (CourseID) REFERENCES courses (CourseID)
+);
+
+#Creating Table- Student
+CREATE TABLE Student
+(SID VARCHAR (10),
+SName CHAR (20) NOT NULL,
+BatchID VARCHAR (10),
+EnrollYear INT NOT NULL,
+SAddress VARCHAR (100) NOT NULL,
+SEmail VARCHAR (20) NOT NULL,
+SPhone INT NOT NULL, 
+SStatus CHAR (10) NOT NULL, 
+CONSTRAINT stu_pk PRIMARY KEY(SID),
+CONSTRAINT stu_fk FOREIGN KEY (BatchID) REFERENCES batches (BatchID)
+);
+
+#Creating Table- Rooms
+CREATE TABLE Rooms
+(RoomNo INT (10),
+RoomCapacity INT (10) NOT NULL,
+CONSTRAINT room_pk PRIMARY KEY(RoomNo)
+);
+
+#Creating Table- Batch_Sub_Ins
+CREATE TABLE Batch_Sub_Ins
+(BatchID VARCHAR (10),
+SubID VARCHAR (10),
+InsID VARCHAR (10),
+CONSTRAINT Batch_Sub_pk PRIMARY KEY(BatchID,SubID),
+CONSTRAINT Batch_Sub_fk FOREIGN KEY (SubID) REFERENCES subjects (SubID),
+CONSTRAINT Batch_Sub_fk2 FOREIGN KEY (InsID) REFERENCES Instructors (InsID)
+);
+
+#Creating Table- Schedule
+CREATE TABLE Schedule
+(DOW VARCHAR (10),
+StartTime VARCHAR (10),
+RoomNo INT (10),
+BatchID VARCHAR (10),
+SubID VARCHAR (10),
+EndTime VARCHAR (10),
+CONSTRAINT Schedule_pk PRIMARY KEY(DOW,StartTime,RoomNo),
+CONSTRAINT Schedule_fk FOREIGN KEY (RoomNo) REFERENCES Rooms (RoomNo),
+CONSTRAINT Schedule_fk2 FOREIGN KEY (BatchID) REFERENCES Batches (BatchID),
+CONSTRAINT Schedule_fk3 FOREIGN KEY (SubID) REFERENCES Subjects (SubID)
+);
+
+
