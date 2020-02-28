@@ -1,0 +1,52 @@
+-- 1.	Make a list of students and the instruments they learn. (Natural Join)
+
+USE practice_students_db3;
+SELECT fullname,m.type AS Instrument
+FROM Student s
+NATURAL JOIN music m
+
+
+-- 2.	Find the number of students learning piano in each class.
+
+USE practice_students_db3;
+SELECT 
+fullname,class,
+count(class) as cnt,
+m.type AS Instrument
+FROM Student s
+JOIN music m
+USING (ID)
+WHERE m.type = 'Piano'
+GROUP BY class
+
+
+-- 3.	List the students who have not yet chosen an instrument. (No match)
+
+USE practice_students_db3;
+SELECT 
+fullname,
+m.type AS Instrument
+FROM Student s
+LEFT JOIN music m
+USING (ID)
+WHERE m.type IS NULL
+
+
+-- 4.	Make a checking list of students and the instruments they learn. The list should also contain the students without an instrument. (Outer Join)
+
+USE practice_students_db3;
+SELECT 
+fullname,
+m.type AS Instrument
+FROM Student s
+LEFT JOIN music m
+USING (ID)
+
+-- 5.	List the pair of students from the same class (without any repetitions of the pairs)
+USE practice_students_db3;
+SELECT s.FullName
+FROM Student s 
+JOIN Student m
+ON s.id=m.id
+GROUP BY Fullname
+Having count('fullname')>1
