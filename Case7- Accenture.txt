@@ -1,0 +1,106 @@
+-- 1. In the school one teacher might be teaching more than one class. Write a query to identify how many classes each teacher is taking.
+
+USE database_accenture;
+SELECT teacher_id, count(class_id) as Numberofclasses
+FROM teacher_allocation
+GROUP BY teacher_id
+
+-- 2. It is interesting for teachers to come across students with names similar to theirs. 
+-- John is one of the teachers who finds this fascinating and wants to find out 
+-- how many students in each class have names similar to this. 
+
+USE database_accenture;
+SELECT s.student_name,class_id, count(s.student_name) as cnt
+FROM student s
+JOIN teacher t
+ON s.student_name=t.teacher_name
+group by class_id
+
+-- 3.Every class teacher assigns unique roll number to their class students based on the alphabetical order of their names. Can you help by writing a query that will assign roll number to each student in the class
+
+USE database_accenture;
+SELECT  @a:=@a+1 Rollno, student_name
+FROM student, (SELECT @a:= 0) AS a
+ORDER BY student_name
+
+
+
+-- 4. The principal of the school wants to understand the diversity of students in his school. 
+-- One of the important aspects is gender diversity. 
+-- Provide a query that computes the male to female gender ratio in each class
+
+USE database_accenture;
+SELECT class_id, 
+ROUND(SUM(CASE WHEN gender='M' THEN 1 ELSE 0 END)/
+SUM(CASE WHEN gender='F' THEN 1 ELSE 0 END),2) as GenderRatio
+FROM student
+GROUP BY class_id
+
+-- 5. Every school has teachers with different years of experience working in that school. 
+-- The principal wants to know the average experience of teachers at this school
+USE database_accenture;
+SELECT teacher_id, teacher_name,ROUND(DATEDIFF(CURDATE(),date_of_joining)/365.25,2) AS YrsOfExp
+FROM teacher
+
+
+-- 6. At the end of every year class teachers must provide students with their marks sheet for the whole year.
+-- The marks sheet of a student consists of exam (Quarterly, Half-Yearly, etc.) wise marks obtained out of the total marks.
+-- Help them by writing a query that gives the student wise marks sheet
+USE database_accenture;
+
+SELECT 
+s.student_id,
+s.student_name,
+e.exam_subject,
+ep.marks,
+e.total_marks,
+e.exam_name
+FROM exam_paper ep
+JOIN exam e
+	ON
+ep.exam_id=e.exam_id
+JOIN student s
+	ON
+ep.student_id=s.student_id
+
+
+
+-- 7. Every teacher has certain group of favourite students and keep track of their performance in exams.
+-- A teacher approached you to find out the percentages attained by students with the ids 1,4,9,16,25 in the "quarterly" exam
+-- Write a query to obtain this data for each student
+
+
+USE database_accenture;
+SELECT 
+s.student_id,
+s.student_name,
+e.exam_subject,
+ep.marks,
+e.total_marks,
+concat(round((ep.marks/e.total_marks * 100)),'%') AS percentagemarks,
+e.exam_name
+FROM exam_paper ep
+JOIN exam e
+ON
+ep.exam_id=e.exam_id
+JOIN student s
+ON
+ep.student_id=s.student_id
+WHERE s.student_id IN (1,4,9,16,25) AND e.exam_name = 'Quarterly'
+
+
+
+-- 8. Class teachers assign ranks to their students based on their marks obtained in each exam.
+-- Write a query to assign ranks (countinous) to students in each class for half-yearly exams
+USE database_accenture;
+SELECT 
+s.class_id,
+s.student_id,
+s.student_name,
+Rank()over (partition by s.class_id order by sum(ep.marks) desc) AS Rnk, sum(ep.marks) as Totalmarks
+FROM exam_paper ep
+JOIN student s
+ON
+ep.student_id=s.student_id
+WHERE ep.exam_id LIKE '%h%'
+group by s.student_id;
